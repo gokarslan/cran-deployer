@@ -1,0 +1,6 @@
+# Read configuration file and generate host_vars fil
+- name: Generate host_vars files for the pod
+  copy:
+    dest: "host_vars/{{ item.key}}.yaml"
+    content: "{{ item.value | to_nice_yaml }}"
+  with_dict: "{{ pod }}"

@@ -1,0 +1,39 @@
+[[local|localrc]]
+HOST_IP={{ host_ip }}
+#FLAT_INTERFACE={{ interface_name }}
+#FIXED_RANGE=10.4.128.0/20
+#FIXED_NETWORK_SIZE=4096
+#FLOATING_RANGE=192.168.42.128/25
+MULTI_HOST=1
+LOGFILE=~/devstack/logs/stack.sh.log
+ADMIN_PASSWORD={{ openstack_admin_password }}
+DATABASE_PASSWORD=$ADMIN_PASSWORD
+RABBIT_PASSWORD=$ADMIN_PASSWORD
+SERVICE_PASSWORD=$ADMIN_PASSWORD
+
+#IP_VERSION=4 # only use IPv4, IPv6 is disabled in our machines
+
+DATABASE_TYPE=mysql
+SERVICE_HOST={{ controller_ip }} # controller node ip here
+MYSQL_HOST=$SERVICE_HOST
+RABBIT_HOST=$SERVICE_HOST
+GLANCE_HOSTPORT=$SERVICE_HOST:9292
+ENABLED_SERVICES=n-cpu,q-agt,n-api-meta,placement-client,placement-api #,c-vol
+NOVA_VNC_ENABLED=True
+NOVNCPROXY_URL="http://$SERVICE_HOST:6080/vnc_auto.html"
+VNCSERVER_LISTEN=0.0.0.0
+VNCSERVER_PROXYCLIENT_ADDRESS=$VNCSERVER_LISTEN
+
+REMOTE_CEPH=True
+REMOTE_CEPH_ADMIN_KEY_PATH=/etc/ceph/ceph.client.admin.keyring
+ENABLE_CEPH_GLANCE=True     # store images in ceph
+ENABLE_CEPH_NOVA=True       # allow nova to use ceph resources
+enable_plugin devstack-plugin-ceph https://github.com/sevgicansalih/devstack-plugin-ceph2
+
+enable_plugin networking-odl https://github.com/gokarslan/networking-odl2
+ODL_MODE=compute
+ODL_RELEASE=nitrogen-latest
+[[post-config|$NOVA_CONF]]
+[serial_console]
+enabled=false
+

@@ -1,0 +1,29 @@
+# {{ ansible_managed }}
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+# This is an autoconfigured IPv6 interface
+{% if interface_dhcp == true %}
+{% if virtualbox_pod == true %}
+auto enp0s3
+iface enp0s3 inet dhcp
+
+{% endif %}
+auto {{ interface_name }}
+iface {{ interface_name }} inet dhcp
+{% else %}
+iface {{ interface_name }} inet static
+        address {{ host_ip }}
+        netmask {{ interface_netmask }}
+        gateway {{ interface_gateway }}
+        # dns-* options are implemented by the resolvconf package, if installed
+        dns-nameservers {{ interface_dns_nameservers }}
+        dns-search {{ interface_dns_search }}
+{% endif %}

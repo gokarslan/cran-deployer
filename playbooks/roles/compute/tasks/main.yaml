@@ -1,0 +1,18 @@
+- name: Copy local.conf file
+  template:
+    src: local.conf.j2
+    dest: ~/devstack/local.conf
+
+- name: Install compute related packages
+  apt:
+    name: "{{ packages }}"
+    update_cache: true
+  vars:
+    packages:
+      - qemu-kvm
+      - libvirt-bin
+      - ubuntu-vm-builder
+      - bridge-utils
+
+- name: Install devstack
+  command: ~/devstack/stack.sh

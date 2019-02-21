@@ -1,0 +1,8 @@
+- name: Copy local.conf file
+  template:
+    src: local.conf.j2
+    dest: ~/devstack/local.conf
+
+- name: Install devstack
+  command: ~/devstack/stack.sh
+

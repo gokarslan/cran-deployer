@@ -1,0 +1,34 @@
+- name: Install pip
+  apt:
+    name: "{{ packages }}"
+    update_cache: true
+  vars:
+    packages:
+      - python-pip
+
+- name: Remove some python packages
+  apt:
+    name: "{{ packages }}"
+    state: absent
+  vars:
+    packages:
+      - python-enum34
+      - python-psutil
+      - python-logutils
+
+- name: Install setuptools and pastedeploy
+  pip:
+    name:
+      - setuptools
+      - pastedeploy==1.5.0
+
+- name: Check if paste deploy is installed correctly
+  command: python -c "from paste import deploy"
+
+- name: Install python-rados
+  apt:
+    name: python-rados
+    autoremove: true
+
+- name: Check if python-rados is  installed correctly
+  command: python -c "import rados"

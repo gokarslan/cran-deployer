@@ -1,0 +1,35 @@
+# Autoconfigure some of the ansible scripts
+- hosts: localhost
+  roles:
+    - configure
+
+# Perform common tasks for all nodes
+- hosts: all
+  remote_user: root
+  roles:
+    - common
+
+# Install ceph on to ceph nodes
+- hosts: controller
+  remote_user: root
+  roles:
+    - ceph
+
+# Install controllers, not tested with more than 1 controller
+- hosts: controller
+  remote_user: root
+  become: true
+  become_user: stack
+  roles:
+    - controller
+
+## Install compute nodes.
+- hosts: compute
+  remote_user: root
+  become: true
+  become_user: stack
+  roles:
+    - compute
+
+# POST INSTALL! nova-manage cell_v2 discover_hosts
+
