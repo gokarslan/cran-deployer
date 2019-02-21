@@ -1,0 +1,47 @@
+#!/usr/bin/python3
+
+import argparse
+import subprocess
+import sys
+
+from colorama import init
+from termcolor import cprint
+from pyfiglet import figlet_format
+
+ansible_command = "ansible-playbook -i playbooks/hosts"
+
+
+def main():
+    cprint(figlet_format('BoUN CRAN', font='speed'), 'blue', attrs=['bold']),
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', "--install", dest='install',
+                        action='store_true',
+                        default=True,
+                        help='install Devstack')
+    parser.add_argument('-u', "--uninstall", dest='uninstall',
+                        action='store_true',
+                        default=True,
+                        help='uninstall Devstack')
+    parser.add_argument('-y', action="store_true", dest="y", default=False,
+                        help="answer yes to all prompts")
+
+    opts, unknown_opts = parser.parse_known_args()
+
+    if opts.install:
+        # TODO: run some test first
+        if opts.y or 'y' in input("Do you want to install devstack? [Y/n] ").lower():
+            process_cmd = ansible_command + " playbooks/install.yaml"
+            process = subprocess.Popen(process_cmd.split(), stdout=subprocess.PIPE)
+            for line in iter(process.stdout.readline, b''):
+                print(line.decode("utf-8")[:-1])
+    elif opts.uninstall:
+        if opts.y or 'y' in input("Do you want to uninstall devstack? [Y/n] ").lower():
+            process_cmd = ansible_command + " playbooks/uninstall.yaml"
+            process = subprocess.Popen(process_cmd.split(), stdout=subprocess.PIPE)
+            for line in iter(process.stdout.readline, b''):
+                print(line.decode("utf-8")[:-1])
+
+
+if __name__ == "__main__":
+    init(strip=not sys.stdout.isatty())
+    main()

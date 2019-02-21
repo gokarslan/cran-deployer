@@ -15,7 +15,7 @@ CRAN deployer can be run from any computer having ansible and ssh access to all 
 Once the configuration file is updated (`playbooks/group_vars/all.yaml`) and the hosts file is updated
 it can be run using
 
-``` ansible-playbook -i hosts install.yaml ```
+``` python3 cran-deployer.py -i ```
 
 One simple trick is to update `/etc/hosts` file of the host computer so that `hosts` file can contain
 only the names of the nodes.
