@@ -1,0 +1,27 @@
+- name: Check if devstack is installed
+  stat:
+    path: /opt/stack/devstack
+  register: devstack_path_stat
+
+- name: Run unstack
+  command: ~/devstack/unstack.sh
+  become: yes
+  become_user: stack
+  when: devstack_path_stat.stat.exists
+
+- name: Run clean script
+  command: ~/devstack/clean.sh
+  become: yes
+  become_user: stack
+  when: devstack_path_stat.stat.exists
+
+- name: Run unstack
+  file:
+    state: absent
+    path: /opt/stack/*
+  when: devstack_path_stat.stat.exists
+
+# TODO: Are these really necessary?
+# /usr/local/lib/python2.7/dist-packages/*  /usr/local/lib/python3.5/dist-packages/*
+# /usr/local/site_ruby/* /usr/local/bin/* /etc/openvswitch /var/log/openvswitch/*
+# && sudo reboot now

@@ -20,7 +20,7 @@ auto {{ interface_name }}
 iface {{ interface_name }} inet dhcp
 {% else %}
 iface {{ interface_name }} inet static
-        address {{ host_ip }}
+        address {{ ansible_host }}
         netmask {{ interface_netmask }}
         gateway {{ interface_gateway }}
         # dns-* options are implemented by the resolvconf package, if installed

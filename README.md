@@ -11,11 +11,15 @@ The current version of CRAN Deployer supports two types of nodes in a pod:
 
 ## Installation
 
+CRAN deployer requires python3, and the required packages can be installed using
+
+```pip3 install -r requirements.txt ```
+
 CRAN deployer can be run from any computer having ansible and ssh access to all nodes of the pod. 
-Once the configuration file is updated (`playbooks/group_vars/all.yaml`) and the hosts file is updated
+Once the configuration file is updated (`config.yaml` is the default path) and the hosts file is updated
 it can be run using
 
-``` python3 cran-deployer.py -i ```
+``` ./cran-deployer.py -i -p```
 
 One simple trick is to update `/etc/hosts` file of the host computer so that `hosts` file can contain
 only the names of the nodes.

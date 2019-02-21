@@ -1,0 +1,5 @@
+# Uninstall from all nodes
+- hosts: all
+  remote_user: root
+  roles:
+    - uninstall

@@ -12,7 +12,7 @@
     msg: "{{ item.key }} is not in the list of compute services."
   when: "'{{ item.key }}' not in service_out.stdout"
   ignore_errors: yes
-  with_dict: "{{ pod }}"
+  with_dict: "{{ pod.compute }}"
 
 - name: Create two cirros virtual machines
   shell:  "source {{ openstack_openrc_path }} admin && openstack server create --flavor m1.tiny

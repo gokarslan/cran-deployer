@@ -1,15 +1,6 @@
 #- name: Check
 #  debug:
-#    msg: "System {{ inventory_hostname }} has uuid {{ ansible_all_ipv4_addresses }} and {{ host_ip }}"
-# ./unstack.sh && ./clean.sh
-#switch to cloudran user
-#sudo rm -rf /opt/stack/*
-#sudo rm -rf /usr/local/lib/python2.7/dist-packages/* /usr/local/site_ruby/* /usr/local/bin/*
-#sudo rm -rf /etc/openvswitch
-#sudo rm -rf /var/log/openvswitch/*
-#sudo rm -rf /usr/lib/python2.7/dist-packages/*
-#sudo reboot now
-#./unstack.sh && ./clean.sh && sudo rm -rf /opt/stack/* /usr/local/lib/python2.7/dist-packages/*  /usr/local/lib/python3.5/dist-packages/*  /usr/local/site_ruby/* /usr/local/bin/* /etc/openvswitch /var/log/openvswitch/* && sudo rm -rf /usr/lib/python2.7/dist-packages/* && sudo reboot now
+#    msg: "System {{ inventory_hostname }} has uuid {{ ansible_all_ipv4_addresses }} and {{ ansible_host }}"
 
 - name: Check if {{ username }} set as nopassword sudoer
   command: grep -Fxq "{{ username }} ALL=(ALL) NOPASSWD:ALL" /etc/sudoers
@@ -31,12 +22,16 @@
     src: interfaces.j2
     dest: /etc/network/interfaces
   register: interface
+  tags:
+    - network_configure
 
 - name: Restart networking
   systemd:
     name: networking
     state: restarted
   when: interface.changed
+  tags:
+    - network_configure
 
 - name: Check if stack set as nopassword sudoer
   command: grep -Fxq "stack ALL=(ALL) NOPASSWD:ALL" /etc/sudoers
