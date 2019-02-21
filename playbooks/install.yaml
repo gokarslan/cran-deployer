@@ -22,8 +22,10 @@
   become_user: stack
   roles:
     - controller
+  vars:
+    install: true
 
-## Install compute nodes.
+# Install compute nodes.
 - hosts: compute
   remote_user: root
   become: true
@@ -31,5 +33,13 @@
   roles:
     - compute
 
-# POST INSTALL! nova-manage cell_v2 discover_hosts
+- hosts: controller
+  remote_user: root
+  become: true
+  become_user: stack
+  roles:
+    - controller
+  vars:
+    post_install: true
+
 

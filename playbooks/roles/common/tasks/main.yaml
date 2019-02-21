@@ -38,11 +38,27 @@
     state: restarted
   when: interface.changed
 
+- name: Check if stack set as nopassword sudoer
+  command: grep -Fxq "stack ALL=(ALL) NOPASSWD:ALL" /etc/sudoers
+  register: sudoer_stack
+  check_mode: false
+  ignore_errors: true
+  changed_when: false
+  no_log: true
+
 - name: Create stack user
   user:
     name: stack
     shell: /bin/bash
     home: /opt/stack
+  when: sudoer_stack.rc != 0
+
+- name: Update sudoers file
+  lineinfile:
+    path: /etc/sudoers
+    insertafter: EOF
+    line: "stack ALL=(ALL) NOPASSWD:ALL"
+  when: sudoer_stack.rc != 0
 
 - name: Clone devstack
   git:

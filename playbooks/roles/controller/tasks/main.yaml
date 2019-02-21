@@ -2,7 +2,16 @@
   template:
     src: local.conf.j2
     dest: ~/devstack/local.conf
+  when: install is defined and install
 
 - name: Install devstack
   command: ~/devstack/stack.sh
+  register: devstack
+  when: install is defined and install
+
+# TODO: copy ceph files and at the compute task copy them under /etc/ceph before running stack.sh
+
+- include_tasks: post_install.yaml
+  when: post_install is defined and post_install
+
 

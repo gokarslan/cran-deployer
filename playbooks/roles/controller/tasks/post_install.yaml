@@ -1,0 +1,33 @@
+- name: Run discovery for hosts
+  command: nova-manage cell_v2 discover_hosts
+
+- name: Get all compute services
+  shell: "source {{ openstack_openrc_path }} admin && openstack compute service list"
+  args:
+    executable: /bin/bash
+  register: service_out
+
+- name: Check if any node is not in the compute service lists
+  fail:
+    msg: "{{ item.key }} is not in the list of compute services."
+  when: "'{{ item.key }}' not in service_out.stdout"
+  ignore_errors: yes
+  with_dict: "{{ pod }}"
+
+- name: Create two cirros virtual machines
+  shell:  "source {{ openstack_openrc_path }} admin && openstack server create --flavor m1.tiny
+  --image cirros-0.3.5-x86_64-disk '{{ item }}' --network private"
+  with_items:
+    - cirros1
+    - cirros2
+  args:
+    executable: /bin/bash
+
+- name: Copy vm test script for cirros
+  copy:
+    src: cirros_test.py
+    dest: ~/cirros_test.py
+
+- name: Run vm test script
+  command: python ~/cirros_test.py
+

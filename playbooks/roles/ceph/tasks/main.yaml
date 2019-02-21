@@ -4,7 +4,9 @@
     update_cache: true
   vars:
     packages:
+      - python-apt
       - python-pip
+      - python-setuptools
 
 - name: Remove some python packages
   apt:
@@ -30,5 +32,5 @@
     name: python-rados
     autoremove: true
 
-- name: Check if python-rados is  installed correctly
+- name: Check if python-rados is installed correctly
   command: python -c "import rados"

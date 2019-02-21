@@ -3,7 +3,7 @@
     src: local.conf.j2
     dest: ~/devstack/local.conf
 
-- name: Install compute related packages
+- name: Install compute node related packages
   apt:
     name: "{{ packages }}"
     update_cache: true
@@ -13,6 +13,8 @@
       - libvirt-bin
       - ubuntu-vm-builder
       - bridge-utils
+  become: true
+  become_user: root
 
 - name: Install devstack
   command: ~/devstack/stack.sh
