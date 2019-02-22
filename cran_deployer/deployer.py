@@ -66,7 +66,7 @@ def main():
     parser.add_argument("--no-retry", action="store_true", dest="no_retry", default=False,
                         help="if given, playbooks will run from scratch")
     parser.add_argument('-v', '--version', action='version',
-                        version='%(prog)s {version}'.format(version="0.0.4"))
+                        version='%(prog)s {version}'.format(version="0.0.5"))
     parser.add_argument("--debug", action="store_true", dest="debug", default=False,
                         help="set log level to debug")
 
