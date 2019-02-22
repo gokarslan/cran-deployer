@@ -55,3 +55,4 @@ using openstack python API
 2. Current playbooks does not have enough tags for skipping some of the jobs. Moreover, user might 
 want to install only on some of the nodes.
 3. The current way of building /etc/network/interfaces file might not be generic for all kinds of hosts.
+4. **SSH KEYS NEEDS TO BE SHARED BETWEEN HOSTS BEFORE RUNNING THE SCRIPTS**

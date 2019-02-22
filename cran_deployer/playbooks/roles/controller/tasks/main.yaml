@@ -9,11 +9,6 @@
   register: devstack
   when: install is defined and install
 
-- name: test
-  debug:
-    msg: " {{ item.key }}"
-  with_dict: "{{ pod.compute }}"
-
 - name: Copy ceph configurations to compute nodes
   synchronize:
     src: /etc/ceph/*
@@ -21,6 +16,7 @@
     mode: pull
   delegate_to: "{{ item.key }}"
   with_dict: "{{ pod.compute }}"
+  when: install is defined and install
 
 - include_tasks: post_install.yaml
   when: post_install is defined and post_install

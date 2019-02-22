@@ -13,8 +13,6 @@ import yaml
 from cran_deployer.log import LOG
 from cran_deployer.log import setup as log_setup
 
-ansible_command = "ansible-playbook -i playbooks/hosts"
-
 
 def create_hosts_file(config, playbook_path):
     data = ""
@@ -61,7 +59,8 @@ def main():
     parser.add_argument('-c', '--config-file', dest="config_file",
                         default="cran_deployer/config.yaml",
                         help="path for configuration file")
-    parser.add_argument('--playbook-path', dest="playbook_path", default="playbooks",
+    parser.add_argument('--playbook-path', dest="playbook_path",
+                        default=os.path.dirname(os.path.abspath(__file__)) + "/playbooks",
                         help="path for the playbooks")
     parser.add_argument("--no-retry", action="store_true", dest="no_retry", default=False,
                         help="if given, playbooks will run from scratch")
@@ -82,12 +81,14 @@ def main():
         LOG.error("Incorrect config file at %s", opts.config_file)
         return -1
 
+    ansible_command = "ansible-playbook -i " + opts.playbook_path + "/hosts"
+
     if opts.install:
         # TODO: run some test first
         if opts.y or 'y' in input("Do you want to install devstack? [Y/n] ").lower():
             create_hosts_file(config=config, playbook_path=opts.playbook_path)
             create_group_vars(config=config, playbook_path=opts.playbook_path)
-            process_cmd = ansible_command + " playbooks/install.yaml"
+            process_cmd = ansible_command + " " + opts.playbook_path + "/install.yaml"
             if 'network_configure' in config and not config['network_configure']:
                 process_cmd += ' --skip-tags "network_configure"'
             if not opts.no_retry and os.path.isfile(opts.playbook_path + "/install.retry"):
@@ -107,7 +108,7 @@ def main():
             print(line.decode("utf-8")[:-1])
     if opts.uninstall:
         if opts.y or 'y' in input("Do you want to uninstall devstack? [Y/n] ").lower():
-            process_cmd = ansible_command + " playbooks/uninstall.yaml"
+            process_cmd = ansible_command + " " + opts.playbook_path + "/uninstall.yaml"
             if not opts.no_retry and os.path.isfile(opts.playbook_path + "/post_install.retry"):
                 process_cmd += " --limit @" + opts.playbook_path + "/post_install.retry"
             process = subprocess.Popen(process_cmd.split(), stdout=subprocess.PIPE)
