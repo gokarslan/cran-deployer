@@ -22,7 +22,7 @@ if __name__ == '__main__':
     setup(setup_requires=['pbr'], pbr=True,
           install_requires=['pytest'],
           keywords='cran-deployer',
-          scripts=['cran-deployer/cran-deployer'],
+          scripts=['cran-deployer'],
           tests_require=['tox'],
           cmdclass={'test': Tox}
           )

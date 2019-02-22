@@ -2,7 +2,7 @@
 
 
 def main():
-    print ("Cirros test!")
+    print("Cirros test!")
 
 
 if __name__ == "__main__":

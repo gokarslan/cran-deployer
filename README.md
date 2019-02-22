@@ -30,20 +30,22 @@ Install `cran_deployer-<VERSION>-py3-none-any.whl` and run
 
 ```pip install cran_deployer-<VERSION>-py3-none-any.whl```
 
+The executable `cran-deployer` will be installed to the python library.
+
 ## CRAN Installation
 
 CRAN deployer can be run from any computer having ansible and ssh access to all nodes of the pod. 
 Once the configuration file is updated (`config.yaml` is the default path) and the hosts file is updated
 it can be run using
 
-``` ./cran-deployer.py -i -p```
+``` cran-deployer -i -p```
 
 ## CRAN Uninstalling
 
 If you want to uninstall everything from the pod run:
 
 
-``` ./cran-deployer.py -u```
+``` cran-deployer -u```
 
 
 ## TODO

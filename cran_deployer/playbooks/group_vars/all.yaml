@@ -1,0 +1,26 @@
+ansible_ssh_private_key_file: ~/.ssh/id_rsa
+controller_ip: 192.168.56.4
+devstack_repo: https://github.com/openstack-dev/devstack.git
+devstack_version: c7114582c0b88f379cae795c8bc88bf840d0965a
+interface_dhcp: true
+interface_dns_nameservers: 79.123.177.5
+interface_dns_search: cmpe.boun.edu.tr
+interface_gateway: 79.123.177.1
+interface_name: enp0s8
+interface_netmask: 255.255.255.128
+network_configure: true
+openstack_admin_password: cloudran
+openstack_fixed_ip_range: 10.1.0.0/20
+openstack_floating_ip_range: 172.24.5.0/24
+openstack_openrc_path: /opt/stack/devstack/openrc
+openstack_public_network_gateway: 172.24.5.1
+openstack_service_token: supersecrettoken
+pod:
+  compute:
+  - compute-1:
+      host_ip: 192.168.56.3
+  controller:
+  - control:
+      host_ip: 192.168.56.4
+username: cloudran
+virtualbox_pod: true

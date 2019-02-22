@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import argparse
 import os
@@ -10,8 +10,8 @@ from termcolor import cprint
 from pyfiglet import figlet_format
 import yaml
 
-from log import LOG
-from log import setup as log_setup
+from cran_deployer.log import LOG
+from cran_deployer.log import setup as log_setup
 
 ansible_command = "ansible-playbook -i playbooks/hosts"
 
@@ -41,6 +41,7 @@ def create_group_vars(config, playbook_path):
 
 
 def main():
+    init(strip=not sys.stdout.isatty())
     cprint(figlet_format('BoUn CRAN', font='speed'), 'blue')  # attrs=['bold']
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', "--install", dest='install',
@@ -57,18 +58,19 @@ def main():
                         help='runs post install scripts')
     parser.add_argument('-y', action="store_true", dest="y", default=False,
                         help="answer yes to all prompts")
-    parser.add_argument('-c', '--config-file', dest="config_file", default="config.yaml",
+    parser.add_argument('-c', '--config-file', dest="config_file",
+                        default="cran_deployer/config.yaml",
                         help="path for configuration file")
     parser.add_argument('--playbook-path', dest="playbook_path", default="playbooks",
                         help="path for the playbooks")
     parser.add_argument("--no-retry", action="store_true", dest="no_retry", default=False,
                         help="if given, playbooks will run from scratch")
     parser.add_argument('-v', '--version', action='version',
-                        version='%(prog)s {version}'.format(version="0.0.3"))
+                        version='%(prog)s {version}'.format(version="0.0.4"))
     parser.add_argument("--debug", action="store_true", dest="debug", default=False,
                         help="set log level to debug")
 
-    opts, unknown_opts = parser.parse_known_args()
+    opts, _ = parser.parse_known_args()
 
     log_setup(debug=opts.debug)
 
@@ -77,8 +79,8 @@ def main():
     with open(opts.config_file, 'r') as f:
         config = yaml.load(f)
     if not config:
-        LOG.error("Incorrect config file at " + opts.config_file)
-        sys.exit(-1)
+        LOG.error("Incorrect config file at %s", opts.config_file)
+        return -1
 
     if opts.install:
         # TODO: run some test first
@@ -90,7 +92,7 @@ def main():
                 process_cmd += ' --skip-tags "network_configure"'
             if not opts.no_retry and os.path.isfile(opts.playbook_path + "/install.retry"):
                 process_cmd += " --limit @" + opts.playbook_path + "/install.retry"
-            LOG.info("Executing: " + process_cmd)
+            LOG.info("Executing: %s", process_cmd)
             process = subprocess.Popen(process_cmd.split(), stdout=subprocess.PIPE)
             for line in iter(process.stdout.readline, b''):
                 print(line.decode("utf-8")[:-1])
@@ -99,7 +101,7 @@ def main():
         process_cmd = ansible_command + " " + opts.playbook_path + "/post_install.yaml"
         if not opts.no_retry and os.path.isfile(opts.playbook_path + "/post_install.retry"):
             process_cmd += " --limit @" + opts.playbook_path + "/install.retry"
-        LOG.info("Executing: " + process_cmd)
+        LOG.info("Executing: %s", process_cmd)
         process = subprocess.Popen(process_cmd.split(), stdout=subprocess.PIPE)
         for line in iter(process.stdout.readline, b''):
             print(line.decode("utf-8")[:-1])
@@ -111,8 +113,8 @@ def main():
             process = subprocess.Popen(process_cmd.split(), stdout=subprocess.PIPE)
             for line in iter(process.stdout.readline, b''):
                 print(line.decode("utf-8")[:-1])
+    return 0
 
 
 if __name__ == "__main__":
-    init(strip=not sys.stdout.isatty())
-    main()
+    sys.exit(main())
