@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/gokarslan/cran-deployer.svg?token=q3HaKjfJDzXzenoF3wmP&branch=master)](https://travis-ci.com/gokarslan/cran-deployer)
 # CloudRAN Deployer
 
 CRAN Deployer is an OpenStack installation tool for CRAN testbeds. It uses the Devstack installer 
